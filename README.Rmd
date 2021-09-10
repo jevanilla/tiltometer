@@ -1,0 +1,40 @@
+---
+title: "Tilto"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Tiltometer
+
+This is for managing and understanding your tiltmeter data
+
+## Requirements
+
+  + [R v4+](https://www.r-project.org/)
+  + [dplyr](https://CRAN.R-project.org/package=dplyr)
+  + [readr](https://CRAN.R-project.org/package=readr)
+  + [clifro](https://CRAN.R-project.org/package=clifro)
+  + [stringr](https://CRAN.R-project.org/package=stringr)
+  + [ggplot2](https://CRAN.R-project.org/package=ggplot2)
+
+## Installation
+
+```
+remotes::install_github("rfrancolini/tiltometer")
+```
+
+## Read Example Data
+
+```{r example}
+library(tiltometer)
+x <- read_tiltometer()
+x
+```
+
+```{r uvplot}
+uv <- draw_uv(x)
+uv
+```
