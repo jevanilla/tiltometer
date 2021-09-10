@@ -16,7 +16,7 @@ example_filename <- function(){
 read_tiltometer <- function(filename = example_filename()){
   stopifnot(inherits(filename, "character"))
   stopifnot(file.exists(filename[1]))
-  x <- supressMessages(readr::read_csv(filename[1]))
+  x <- suppressMessages(readr::read_csv(filename[1]))
   #cleaning up the header
   h <- colnames(x)
   lut <- c("ISO 8601 Time" = "date",
