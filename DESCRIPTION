@@ -13,5 +13,5 @@ Imports:
   dplyr,
   readr,
   stringr,
-  clifro,
-  ggplot2
+  ggplot2,
+  clifro
