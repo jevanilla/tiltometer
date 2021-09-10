@@ -5,4 +5,5 @@
 #' @docType package
 #' @name tiltometer
 #' @aliases currentmeter
+#' @importFrom dplyr %>%
 NULL
