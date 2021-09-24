@@ -4,10 +4,29 @@
 \alias{tiltometer_rose}
 \title{plot windrose for currents}
 \usage{
-tiltometer_rose(x)
+tiltometer_rose(
+  x = read_tiltometer(),
+  legend_title = "Current Speed",
+  title = NA,
+  speed.cuts = NA,
+  ...
+)
 }
 \arguments{
-\item{x}{tibble of current data}
+\item{x}{tibble of tiltometer data}
+
+\item{legend_title}{title of legend}
+
+\item{title}{character, or NA. Title of the plot, or NA to skip}
+
+\item{speed.cuts}{character, numeric, or NA.
+\itemize{
+\item NA - the default, auto compute 5 quantiles
+\item character - "quantile-3" or "quantile-4", computer 3 or 4 quantiles
+\item numeric - explicit cut points in a vector
+}}
+
+\item{...}{further arguments passed to \code{\link[ggplot2]{theme}}}
 }
 \value{
 ggplot
