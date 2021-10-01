@@ -15,19 +15,25 @@
 #' @param ... further arguments passed to \code{\link[ggplot2]{theme}}
 #' @return ggplot
 
-#Add quantiles, change colors, # wedges
+#Add change colors, # wedges
 tiltometer_rose <- function(x = read_tiltometer(),
                             legend_title = "Current Speed",
                             title = NA,
                             speed.cuts = NA,
                             ...){
+if (FALSE){
+  legend_title = "Current Speed"
+  title = NA
+  speed.cuts = NA
+}
 
-  if (inherits(speed.cuts, "character") && !is.na(speed.cuts)){
+
+  if (inherits(speed.cuts, "character") || is.na(speed.cuts)){
 
     speed.cuts <- switch(speed.cuts[1],
                          "quantile-3" = quantile(x$speed, probs = c(0, (1/3), (2/3))),
                          "quantile-4" = quantile(x$speed, probs = c(0, 0.25, 0.5, 0.75)),
-                         stop("speed_cuts method not known")
+                         ggplot2::cut_interval(x$speed, 5)
     )
 
     gg = clifro::windrose(x$speed,
@@ -55,10 +61,13 @@ tiltometer_rose <- function(x = read_tiltometer(),
 #' @export
 #' @param x tibble of tiltometer data
 #' @param min_speed numeric, hide currents at or below this speed
+#' @param alpha numeric, 0.1 default
+#' @param main character, title
 #' @return ggplot2 object
 draw_uv <- function(x = read_tiltometer(),
                     min_speed = 10,
-                    main = "U-V currents"){
+                    main = "U-V currents",
+                    alpha = 0.1){
 
   # determine the start of each segment
   m <- abs(min_speed[1])
@@ -76,16 +85,16 @@ draw_uv <- function(x = read_tiltometer(),
   xr <- range(x$u)
   yr <- range(x$v)
   r <- c(min(c(xr[1], yr[1])), max(c(xr[2], yr[2])) )
-  ggplot2::ggplot(data = x, ggplot2::aes(x = u, y = v)) +
+  ggplot2::ggplot(data = x, ggplot2::aes(x = .data$u, y = .data$v)) +
     ggplot2::coord_fixed(ratio = 1,
                          xlim = r,
                          ylim = r) +
     ggplot2::labs(title = main) +
     ggplot2::geom_segment(ggplot2::aes(x = x0,
                                        y = y0,
-                                       xend = u,
-                                       yend = v),
-                          alpha = 0.1)
+                                       xend = .data$u,
+                                       yend = .data$v),
+                          alpha = alpha[1])
 }
 
 

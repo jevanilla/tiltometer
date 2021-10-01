@@ -38,3 +38,13 @@ x
 uv <- draw_uv(x)
 uv
 ```
+
+```{r windrose}
+
+month <- droplevels(factor(format(x$date, "%b"), levels = month.abb))
+tiltometer_rose(x, facet = month, n_col = 2, speed.cuts = "quantile-4")
+
+
+```
+
+

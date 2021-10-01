@@ -47,3 +47,10 @@ uv
 ```
 
 ![](README_files/figure-gfm/uvplot-1.png)<!-- -->
+
+``` r
+month <- droplevels(factor(format(x$date, "%b"), levels = month.abb))
+tiltometer_rose(x, facet = month, n_col = 2, speed.cuts = "quantile-4")
+```
+
+![](README_files/figure-gfm/windrose-1.png)<!-- -->

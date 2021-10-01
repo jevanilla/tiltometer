@@ -4,12 +4,21 @@
 \alias{draw_uv}
 \title{Plot U and V vectors - possibly with low currents hidden from view}
 \usage{
-draw_uv(x = read_tiltometer(), min_speed = 10, main = "U-V currents")
+draw_uv(
+  x = read_tiltometer(),
+  min_speed = 10,
+  main = "U-V currents",
+  alpha = 0.1
+)
 }
 \arguments{
 \item{x}{tibble of tiltometer data}
 
 \item{min_speed}{numeric, hide currents at or below this speed}
+
+\item{main}{character, title}
+
+\item{alpha}{numeric, 0.1 default}
 }
 \value{
 ggplot2 object
