@@ -3,7 +3,7 @@
 #' @export
 #' @return filename
 example_filename <- function(){
-  system.file("exampledata/2006052_Halfway_TCM_Current.csv.gz",
+  system.file("exampledata/2102053_LittleDrisko_TCM_Current.zip",
               package="tiltometer")
 }
 
