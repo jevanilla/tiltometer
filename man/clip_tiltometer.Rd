@@ -4,14 +4,12 @@
 \alias{clip_tiltometer}
 \title{clip tiltometer table by date}
 \usage{
-clip_tiltometer(x, deploy = NA, recover = NA)
+clip_tiltometer(x, startstop = NA)
 }
 \arguments{
 \item{x}{tibble, tiltometer}
 
-\item{deploy}{POSIXt or NA, if not NA, clip data before this time}
-
-\item{recover}{POSIXt or NA, if not NA, clip data before this time}
+\item{startstop}{POSIXt vector of two values or NA, only used if clip = "user"}
 }
 \value{
 tibble
