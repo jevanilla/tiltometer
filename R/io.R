@@ -63,7 +63,7 @@ read_tiltometer <- function(filename = example_filename(),
   x <- suppressMessages(readr::read_csv(filename[1]))
   #cleaning up the header
   h <- colnames(x)
-  lut <- c("ISO 8601 Time" = "date",
+  lut <- c("ISO 8601 Time" = "DateTime",
            "Speed (cm/s)" = "speed",
            "Heading (degrees)" = "dir",
            "Velocity-N (cm/s)" = "v",
