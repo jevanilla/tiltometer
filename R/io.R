@@ -17,7 +17,7 @@ clip_tiltometer <- function(x,
                           startstop = NA) {
 
   if (is.na(startstop)[1]) {
-    x <- x %>% dplyr::mutate (Date = as.Date(.data$DateTime, tz = "EST"),
+    x <- x %>% dplyr::mutate (Date = as.Date(.data$DateTime, tz = "UTC"),
                               DateNum = as.numeric(.data$DateTime))
 
     ix <- which(diff(x$Date) != 0)[1]  + 1
@@ -53,14 +53,14 @@ clip_tiltometer <- function(x,
 #' @export
 #' @param filename character, the name of the file
 #' @param clipped character, if auto, removed partial start/end days. if user, uses supplied startstop days. if none, does no date trimming
-#' @param startstop POSIXt vector of two values or NA, only used if clip = "user"
+#' @param startstop POSIXt vector of two values in UTC or NA, only used if clip = "user"
 #' @return tibble
 read_tiltometer <- function(filename = example_filename(),
                             clipped = c("auto", "user", "none")[1],
                             startstop = NA){
   stopifnot(inherits(filename, "character"))
   stopifnot(file.exists(filename[1]))
-  x <- suppressMessages(readr::read_csv(filename[1]))
+  x <- suppressMessages(readr::read_csv(filename[1], locale = readr::locale(tz = "Etc/GMT-4")))
   #cleaning up the header
   h <- colnames(x)
   lut <- c("ISO 8601 Time" = "DateTime",
@@ -74,6 +74,8 @@ read_tiltometer <- function(filename = example_filename(),
   attr(x, "filename") <- filename[1]
   #use the spec attr for original colnames
   #attr(x, "original_colnames") <- h
+
+  x <- x %>% dplyr::mutate(DateTime = lubridate::with_tz(x$DateTime, tzone = "UTC"))
 
 
   x <- switch(tolower(clipped[1]),

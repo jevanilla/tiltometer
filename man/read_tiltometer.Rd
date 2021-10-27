@@ -15,7 +15,7 @@ read_tiltometer(
 
 \item{clipped}{character, if auto, removed partial start/end days. if user, uses supplied startstop days. if none, does no date trimming}
 
-\item{startstop}{POSIXt vector of two values or NA, only used if clip = "user"}
+\item{startstop}{POSIXt vector of two values in UTC or NA, only used if clip = "user"}
 }
 \value{
 tibble

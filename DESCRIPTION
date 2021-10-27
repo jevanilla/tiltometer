@@ -16,4 +16,5 @@ Imports:
   readr,
   stringr,
   ggplot2,
-  clifro
+  clifro,
+  lubridate
