@@ -52,10 +52,14 @@ clip_tiltometer <- function(x,
 #'
 #' @export
 #' @param filename character, the name of the file
+#' @param site character, site being read in
+#' @param output character, the name for the outputted QAQC file
 #' @param clipped character, if auto, removed partial start/end days. if user, uses supplied startstop days. if none, does no date trimming
 #' @param startstop POSIXt vector of two values in UTC or NA, only used if clip = "user"
 #' @return tibble
 read_tiltometer <- function(filename = example_filename(),
+                            site = NA,
+                            output = NA,
                             clipped = c("auto", "user", "none")[1],
                             startstop = NA){
   stopifnot(inherits(filename, "character"))
@@ -85,8 +89,38 @@ read_tiltometer <- function(filename = example_filename(),
               stop("options for clipped are auto, user, or none. what is ", clipped, "?")
   )
 
+  if (!is.na(site)) {x <- x %>% dplyr::mutate(Site = site)}
+
+  #omit NAs from data
+  x <- na.omit(x)
+
+  if (!is.na(output)) {
+    readr::write_csv(x, file = output) }
+
   return(x)
 
 }
 
 
+#' print out summary of tiltmeter data
+#'
+#' @export
+#' @param x tibble, tibble of tiltmeter data
+#' @return tibble
+summarize_tiltometer<- function(x = read_tiltometer()){
+
+  #remove any NA's before summarizing
+  #remove all 0 PAR items when calculating mean
+
+  x <- na.omit(x)
+
+  s <- x %>% dplyr::group_by(.data$Site) %>%
+    dplyr::summarise(mean.speed = mean(.data$speed),
+                     first.day = dplyr::first(.data$DateTime),
+                     last.day = dplyr::last(.data$DateTime),
+                     max.speed = max(.data$speed),
+                     max.speed.bearing = .data$dir[which.max(.data$speed)],
+                     max.speed.date = .data$DateTime[which.max(.data$speed)])
+
+  return(s)
+}

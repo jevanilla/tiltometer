@@ -8,4 +8,5 @@
 #' @importFrom dplyr %>%
 #' @importFrom stats quantile
 #' @importFrom rlang .data
+#' @importFrom stats na.omit
 NULL

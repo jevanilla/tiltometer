@@ -6,12 +6,18 @@
 \usage{
 read_tiltometer(
   filename = example_filename(),
+  site = NA,
+  output = NA,
   clipped = c("auto", "user", "none")[1],
   startstop = NA
 )
 }
 \arguments{
 \item{filename}{character, the name of the file}
+
+\item{site}{character, site being read in}
+
+\item{output}{character, the name for the outputted QAQC file}
 
 \item{clipped}{character, if auto, removed partial start/end days. if user, uses supplied startstop days. if none, does no date trimming}
 
