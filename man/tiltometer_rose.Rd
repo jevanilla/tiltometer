@@ -9,6 +9,7 @@ tiltometer_rose(
   legend_title = "Current Speed",
   title = NA,
   speed.cuts = NA,
+  flip = TRUE,
   ...
 )
 }
@@ -25,6 +26,8 @@ tiltometer_rose(
 \item character - "quantile-3" or "quantile-4", computer 3 or 4 quantiles
 \item numeric - explicit cut points in a vector
 }}
+
+\item{flip}{plotting water, not wind, default TRUE}
 
 \item{...}{further arguments passed to \code{\link[ggplot2]{theme}}}
 }

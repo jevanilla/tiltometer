@@ -12,6 +12,7 @@
 #' \item character - "quantile-3" or "quantile-4", computer 3 or 4 quantiles
 #' \item numeric - explicit cut points in a vector
 #' }
+#' @param flip plotting water, not wind, default TRUE
 #' @param ... further arguments passed to \code{\link[ggplot2]{theme}}
 #' @return ggplot
 
@@ -20,6 +21,7 @@ tiltometer_rose <- function(x = read_tiltometer(),
                             legend_title = "Current Speed",
                             title = NA,
                             speed.cuts = NA,
+                            flip = TRUE,
                             ...){
 if (FALSE){
   legend_title = "Current Speed"
@@ -27,6 +29,13 @@ if (FALSE){
   speed.cuts = NA
 }
 
+    if (flip == TRUE) {
+      x <- x %>% dplyr::mutate(dir = (.data$dir + 180) %% 360)
+    }
+
+  #https://math.stackexchange.com/questions/1319615/how-to-calculate-opposite-direction-angle
+
+  site <- factor(x$Site)
 
   if (inherits(speed.cuts, "character") || is.na(speed.cuts)){
 
@@ -40,12 +49,14 @@ if (FALSE){
                           x$dir,
                           legend_title = legend_title,
                           speed_cuts = speed.cuts,
+                          facet = site,
                           ...)
   } else {
 
     gg = clifro::windrose(x$speed,
                           x$dir,
                           legend_title = legend_title,
+                          facet = site,
                           ...)
   }
 
@@ -62,39 +73,54 @@ if (FALSE){
 #' @param x tibble of tiltometer data
 #' @param min_speed numeric, hide currents at or below this speed
 #' @param alpha numeric, 0.1 default
+#' @param facet character, name of the column to facet upon (like "Site") or NULL to skip
 #' @param main character, title
 #' @return ggplot2 object
 draw_uv <- function(x = read_tiltometer(),
                     min_speed = 10,
                     main = "U-V currents",
+                    facet = NULL,
                     alpha = 0.1){
 
-  # determine the start of each segment
-  m <- abs(min_speed[1])
-  x0 <- sqrt(m^2/(1 + x$v^2/x$u^2))
-  y0 <- sqrt(m^2 - x0^2)
+
+  normalizeSite <- function(x, key, min_speed = 10) {
+      # determine the start of each segment
+      m <- abs(min_speed[1])
+      x0 <- sqrt(m^2/(1 + x$v^2/x$u^2))
+      y0 <- sqrt(m^2 - x0^2)
+
+      x %>% dplyr::mutate(
+                    x0 = ifelse(.data$speed < m, .data$u, x0 * sign(.data$u)),
+                    y0 = ifelse(.data$speed < m, .data$v, y0 * sign(.data$v))) %>%
+            dplyr::filter(.data$speed >= m)
+  }
 
   x <- x %>%
-    dplyr::arrange(.data$date) %>%
-    dplyr::mutate(
-      x0 = ifelse(.data$speed < m, .data$u, x0 * sign(.data$u)),
-      y0 = ifelse(.data$speed < m, .data$v, y0 * sign(.data$v))) %>%
-    dplyr::filter(.data$speed >= m)
+    dplyr::group_by(.data$Site) %>%
+    dplyr::arrange(.data$DateTime) %>%
+    dplyr::group_map(normalizeSite, .keep = TRUE, min_speed = min_speed) %>%
+    dplyr::bind_rows()
 
 
   xr <- range(x$u)
   yr <- range(x$v)
   r <- c(min(c(xr[1], yr[1])), max(c(xr[2], yr[2])) )
-  ggplot2::ggplot(data = x, ggplot2::aes(x = .data$u, y = .data$v)) +
-    ggplot2::coord_fixed(ratio = 1,
+  gg <- ggplot2::ggplot(data = x, ggplot2::aes(x = .data$u, y = .data$v)) +
+        ggplot2::coord_fixed(ratio = 1,
                          xlim = r,
                          ylim = r) +
-    ggplot2::labs(title = main) +
-    ggplot2::geom_segment(ggplot2::aes(x = x0,
+        ggplot2::labs(title = main) +
+        ggplot2::geom_segment(ggplot2::aes(x = x0,
                                        y = y0,
                                        xend = .data$u,
                                        yend = .data$v),
                           alpha = alpha[1])
+
+  if (!is.null(facet)){
+    gg <- gg + ggplot2::facet_wrap(facet)
+  }
+
+  gg
 }
 
 

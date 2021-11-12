@@ -8,6 +8,7 @@ draw_uv(
   x = read_tiltometer(),
   min_speed = 10,
   main = "U-V currents",
+  facet = NULL,
   alpha = 0.1
 )
 }
@@ -17,6 +18,8 @@ draw_uv(
 \item{min_speed}{numeric, hide currents at or below this speed}
 
 \item{main}{character, title}
+
+\item{facet}{character, name of the column to facet upon (like "Site") or NULL to skip}
 
 \item{alpha}{numeric, 0.1 default}
 }
